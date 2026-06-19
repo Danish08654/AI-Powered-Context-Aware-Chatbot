@@ -1,0 +1,2 @@
+Computer Vision allows machines to interpret images and videos.
+It is used in object detection, face recognition, and medical imaging.
