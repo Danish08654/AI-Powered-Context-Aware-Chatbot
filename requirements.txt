@@ -3,5 +3,5 @@ langchain
 faiss-cpu
 sentence-transformers
 transformers
-torch
+torch==2.3.0
 langchain-community==0.3.7
