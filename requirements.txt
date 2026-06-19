@@ -1,13 +1,15 @@
 streamlit
+
 langchain
 langchain-community
 langchain-text-splitters
 langchain-core
+
 transformers
 torch
 torchvision
+
 sentence-transformers
 faiss-cpu
 accelerate
 sentencepiece
-python
