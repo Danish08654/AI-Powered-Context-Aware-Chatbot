@@ -5,7 +5,8 @@ from langchain_community.llms import HuggingFacePipeline
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
-from transformers import pipeline
+
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 
 # =========================
 # PAGE CONFIG
@@ -42,7 +43,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =========================
-# SESSION STATE INIT
+# SESSION STATE
 # =========================
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
@@ -54,7 +55,6 @@ def clear_chat():
 # SIDEBAR
 # =========================
 st.sidebar.title("⚙️ Settings")
-
 st.sidebar.write("Model: FLAN-T5 Base")
 st.sidebar.write("Embeddings: MiniLM-L6-v2")
 st.sidebar.write("Vector DB: FAISS")
@@ -82,20 +82,24 @@ def load_vectorstore():
     return vectorstore
 
 # =========================
-# LOAD LLM
+# LOAD LLM (FIXED)
 # =========================
 @st.cache_resource
 def load_llm():
+    model_name = "google/flan-t5-base"
+
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+
     pipe = pipeline(
-        task="text-generation",
-        model="google/flan-t5-base",
-        max_new_tokens=200,
-        do_sample=True,
-        temperature=0.7,
-        repetition_penalty=1.2
+        "text2text-generation",
+        model=model,
+        tokenizer=tokenizer,
+        max_new_tokens=200
     )
 
     return HuggingFacePipeline(pipeline=pipe)
+
 # =========================
 # BUILD RAG CHAIN
 # =========================
@@ -116,10 +120,10 @@ def load_qa_chain(_vectorstore, _llm):
     template = """
 You are a helpful AI assistant.
 
-Use ONLY the provided context.
+Use ONLY the context below to answer.
 
-If the answer is not available in the context,
-say: "I don't know based on the provided information."
+If the answer is not in the context, say:
+"I don't know based on the provided information."
 
 Context:
 {context}
@@ -127,7 +131,7 @@ Context:
 Question:
 {question}
 
-Answer:
+Answer in a short clear sentence:
 """
 
     prompt = PromptTemplate(
@@ -146,7 +150,7 @@ Answer:
     return qa_chain
 
 # =========================
-# LOAD ALL RESOURCES
+# LOAD EVERYTHING
 # =========================
 try:
     vectorstore = load_vectorstore()
@@ -166,7 +170,13 @@ if query:
     try:
         with st.spinner("Thinking..."):
             result = qa_chain.invoke({"question": query})
-            answer = result.get("answer", "Sorry, I couldn't find an answer.")
+
+            answer = result["answer"]
+
+            # Safe output handling
+            if isinstance(answer, list):
+                answer = answer[0].get("generated_text", str(answer))
+
     except Exception as e:
         answer = f"Error: {str(e)}"
 
