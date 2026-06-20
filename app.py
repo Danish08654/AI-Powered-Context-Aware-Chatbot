@@ -13,10 +13,10 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title(" AI Support Chatbot")
+st.title("AI Support Chatbot")
 
 # =========================
-# CSS
+# CUSTOM CSS
 # =========================
 st.markdown("""
 <style>
@@ -78,7 +78,7 @@ def load_vectorstore():
     return vectorstore
 
 # =========================
-# LOAD MODEL (FIXED - NO PIPELINE)
+# LOAD MODEL
 # =========================
 @st.cache_resource
 def load_model():
@@ -90,21 +90,20 @@ def load_model():
     return tokenizer, model
 
 # =========================
-# GENERATION FUNCTION
+# GENERATION FUNCTION (IMPROVED)
 # =========================
 def generate_answer(tokenizer, model, context, question):
 
-   prompt = f"""
+    prompt = f"""
 You are a helpful AI assistant.
 
-Your job is to explain clearly and in detail using ONLY the context provided.
+Answer the question using ONLY the context below.
 
 RULES:
-- Use only the given context
-- If context is not enough, say: "I don't know based on the provided information."
-- Do NOT copy raw text
-- Explain in simple and natural language
-- Give a helpful, slightly detailed answer (2–5 sentences)
+- Use only provided context
+- Do NOT copy text directly
+- Explain clearly in 2–5 sentences
+- If not in context, say: "I don't know based on the provided information."
 
 Context:
 {context}
@@ -120,12 +119,19 @@ Answer:
     with torch.no_grad():
         outputs = model.generate(
             **inputs,
-            max_new_tokens=200,
+            max_new_tokens=256,
             do_sample=True,
-            temperature=0.7
+            temperature=0.6,
+            top_p=0.9,
+            repetition_penalty=1.2
         )
 
-    return tokenizer.decode(outputs[0], skip_special_tokens=True)
+    raw = tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+    # Clean possible prompt echo
+    answer = raw.replace(prompt, "").strip()
+
+    return answer
 
 # =========================
 # LOAD RESOURCES
@@ -144,15 +150,18 @@ except Exception as e:
 query = st.chat_input("Ask your question...")
 
 if query:
-
     try:
         with st.spinner("Thinking..."):
 
-            # Step 1: Retrieve context from FAISS
-            docs = vectorstore.similarity_search(query, k=3)
+            #  IMPROVED RETRIEVAL (MMR)
+            docs = vectorstore.max_marginal_relevance_search(
+                query,
+                k=3,
+                fetch_k=10
+            )
+
             context = "\n\n".join([doc.page_content for doc in docs])
 
-            # Step 2: Generate answer
             answer = generate_answer(tokenizer, model, context, query)
 
     except Exception as e:
