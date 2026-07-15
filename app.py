@@ -2,7 +2,6 @@ import streamlit as st
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_groq import ChatGroq
-from langchain.prompts import PromptTemplate
 
 st.set_page_config(page_title="AI Chatbot", layout="wide")
 st.title("AI Support Chatbot")
