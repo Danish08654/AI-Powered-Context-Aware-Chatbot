@@ -8,3 +8,5 @@ transformers
 torch
 numpy
 pypdf
+langchain.chains
+torchvision
