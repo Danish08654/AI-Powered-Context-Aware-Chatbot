@@ -1,0 +1,2 @@
+Natural Language Processing allows machines to understand and process human language.
+Examples include chatbots, translation, and sentiment analysis.
