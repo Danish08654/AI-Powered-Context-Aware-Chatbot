@@ -1,10 +1,7 @@
 streamlit
 langchain
 langchain-community
-langchain-huggingface
 faiss-cpu
 sentence-transformers
 transformers
 torch
-numpy
-pypdf
