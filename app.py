@@ -4,7 +4,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from groq import Groq
 
 st.set_page_config(page_title="AI Chatbot", layout="wide")
-st.title("Welcome back")
+st.title("Welcome back to our AI Assistant")
 
 st.markdown("""
 <style>
