@@ -66,10 +66,7 @@ An intelligent **Conversational AI Chatbot** that combines Large Language Models
 ## AI & LLM
 
 - LangChain
-- LangGraph
 - Groq
-- OpenAI
-- Google Gemini
 
 ## Embeddings
 
@@ -79,7 +76,6 @@ An intelligent **Conversational AI Chatbot** that combines Large Language Models
 ## Vector Database
 
 - FAISS
-- ChromaDB
 
 ## Memory
 
