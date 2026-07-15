@@ -1,4 +1,4 @@
-# 💬 Conversational AI Chatbot with Memory & Retrieval
+# 💬 Conversational AI Chatbot 
 
 An intelligent **Conversational AI Chatbot** that combines Large Language Models with **conversation memory** and Retrieval-Augmented Generation to provide context-aware, accurate, and personalized responses. The chatbot remembers previous interactions, retrieves relevant information from external knowledge sources, and delivers natural, human-like conversations.
 
