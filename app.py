@@ -4,7 +4,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from groq import Groq
 
 st.set_page_config(page_title="AI Chatbot", layout="wide")
-st.title("AI Support Chatbot")
+st.title("Welcome back")
 
 st.markdown("""
 <style>
@@ -43,7 +43,7 @@ If the answer is not in the context, say 'I couldn't find that in the documents.
 vectorstore = load_vectorstore()
 
 st.sidebar.title("⚙️ Settings")
-st.sidebar.write("**Model:** Llama 3.3 70B (Groq)")
+st.sidebar.write("**Model:** Llama 3.3 70B ")
 st.sidebar.write("**Embeddings:** MiniLM-L6-v2")
 st.sidebar.write("**Vector Store:** FAISS")
 if st.sidebar.button("🗑️ Clear Chat"):
