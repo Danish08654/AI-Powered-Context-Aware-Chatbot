@@ -34,7 +34,7 @@ If the answer is not in the context, say 'I couldn't find that in the documents.
         messages.append({"role": "user" if role == "user" else "assistant", "content": msg})
     messages.append({"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"})
     return client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-20b",
         messages=messages,
         temperature=0.2,
         max_tokens=512
@@ -43,7 +43,7 @@ If the answer is not in the context, say 'I couldn't find that in the documents.
 vectorstore = load_vectorstore()
 
 st.sidebar.title("⚙️ Settings")
-st.sidebar.write("**Model:** Llama 3.3 70B ")
+st.sidebar.write("**Model:** openai/gpt-oss-20b ")
 st.sidebar.write("**Embeddings:** MiniLM-L6-v2")
 st.sidebar.write("**Vector Store:** FAISS")
 if st.sidebar.button("🗑️ Clear Chat"):
